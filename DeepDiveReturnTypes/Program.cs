@@ -45,9 +45,15 @@ app.MapGet("/employees", () =>
 
 app.MapPost("/employees", (Employee employee) =>
 {
-    if (employee is null)
+    if (employee is null || employee.Id <= 0)
     {
-        return Results.BadRequest("Provided employee is invalid");
+        // The following response follows the problem details standard.
+        return Results.ValidationProblem(
+            new Dictionary<string, string[]>
+            {
+            { "error", new[] { "Id not provided" }}
+            }
+                                        );
     }
     EmployeesRepository.AddEmployee(employee);
     return TypedResults.Created($"/employees/{employee.Id}", employee);
