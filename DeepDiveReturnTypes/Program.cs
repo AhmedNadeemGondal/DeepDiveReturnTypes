@@ -23,19 +23,34 @@ app.MapGet("/employees", () =>
     //return TypedResults.Ok(employees);
 });
 
+//app.MapPost("/employees", (Employee employee) =>
+//{
+//    // Using TypedResults in the following code would result
+//    // in a type mismatch error.
+//    if (employee is null || employee.Id <= 0)
+//    {
+//        //// The following codewould still forward astatus code of 200 Ok
+//        //// as a response is being sent albeit an undesirable one.
+//        //return "Provided employee is invalid";
+//        // Results.BadRequest() is the helper function that allows sending
+//        // the correct status code along with a message if needed.
+//        return Results.BadRequest("Provided employee is invalid") ;
+//    }
+//    EmployeesRepository.AddEmployee(employee);
+//    return Results.Ok("Employee added successfully");
+//}).WithParameterValidation();
+
+// Reimplementing the above endpoint by mixing Results
+// and TypedResults
+
 app.MapPost("/employees", (Employee employee) =>
 {
-    if (employee is null || employee.Id <= 0)
+    if (employee is null)
     {
-        //// The following codewould still forward astatus code of 200 Ok
-        //// as a response is being sent albeit an undesirable one.
-        //return "Provided employee is invalid";
-        // Results.BadRequest() is the helper function that allows sending
-        // the correct status code along with a message if needed.
-        return Results.BadRequest("Provided employee is invalid") ;
+        return Results.BadRequest("Provided employee is invalid");
     }
     EmployeesRepository.AddEmployee(employee);
-    return Results.Ok("Employee added successfully");
+    return TypedResults.Created($"/employees/{employee.Id}", employee);
 }).WithParameterValidation();
 
 
