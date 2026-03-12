@@ -1,7 +1,21 @@
 using WebApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// This adds the standard error handler.
+// RFC 7807 - Problem Details for HTTP APIs
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    // This uses the problem details error handler created above.
+    app.UseExceptionHandler();
+}
+
+// Now the staatus code will also be upto standard.
+app.UseStatusCodePages();
 
 //Implicit routing and enpoint handling
 app.MapGet("/", () => "Hello World!");
