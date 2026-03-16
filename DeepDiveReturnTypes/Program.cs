@@ -1,3 +1,4 @@
+using DeepDiveReturnTypes.Results;
 using WebApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +19,12 @@ if (!app.Environment.IsDevelopment())
 app.UseStatusCodePages();
 
 //Implicit routing and enpoint handling
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => HtmlResult () =>
+{
+    string html = "<h2>Welcome to our API</h2> Our API is used to learn AST.NET Core.";
+
+    return new HtmlResult(html);
+});
 
 app.MapGet("/employees", () =>
 {
